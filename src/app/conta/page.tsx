@@ -1,13 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { User, Settings, Heart, MapPin, Store, Trophy, Star, ChevronRight, Loader2, Info } from "lucide-react";
+import { User, Settings, Heart, MapPin, Store, Trophy, Star, ChevronRight, Loader2, Info, Edit3, X, Phone } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 export default function PerfilPage() {
   const [profile, setProfile] = useState<any>(null);
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  
+  // Modal State
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [formData, setFormData] = useState({
+    full_name: '',
+    address: '',
+    phone: ''
+  });
 
   useEffect(() => {
     async function loadProfile() {
@@ -27,16 +36,28 @@ export default function PerfilPage() {
 
       if (existingProfile) {
         setProfile(existingProfile);
+        setFormData({
+          full_name: existingProfile.full_name || 'Explorador Conecta',
+          address: existingProfile.address || '',
+          phone: existingProfile.phone || ''
+        });
       } else {
         // Criar perfil zerado para este novo visitante
         const newProfile = {
           id: deviceId,
           full_name: 'Explorador Conecta',
           points: 0,
-          level_name: 'Iniciante'
+          level_name: 'Iniciante',
+          address: '',
+          phone: ''
         };
         await supabase.from('user_profiles').insert([newProfile]);
         setProfile(newProfile);
+        setFormData({
+          full_name: newProfile.full_name,
+          address: '',
+          phone: ''
+        });
       }
 
       // Buscar quantidade de favoritos
@@ -52,6 +73,26 @@ export default function PerfilPage() {
     
     loadProfile();
   }, []);
+
+  const handleSaveProfile = async () => {
+    setSaving(true);
+    const { error } = await supabase
+      .from('user_profiles')
+      .update({
+        full_name: formData.full_name,
+        address: formData.address,
+        phone: formData.phone
+      })
+      .eq('id', profile.id);
+
+    if (!error) {
+      setProfile({ ...profile, ...formData });
+      setIsEditModalOpen(false);
+    } else {
+      alert("Erro ao salvar perfil");
+    }
+    setSaving(false);
+  };
 
   if (loading) {
     return (
@@ -79,7 +120,8 @@ export default function PerfilPage() {
           <div className="w-24 h-24 rounded-full bg-amber-100 border-4 border-brand-surface -mt-16 mb-3 flex items-center justify-center relative overflow-hidden">
              {/* eslint-disable-next-line @next/next/no-img-element */}
              <img 
-              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.id}&backgroundColor=b6e3f4`} 
+             <img 
+              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.full_name}&backgroundColor=b6e3f4`} 
               alt="Avatar do Usuário" 
               className="w-full h-full object-cover"
             />
@@ -88,7 +130,20 @@ export default function PerfilPage() {
               Lv. {profile.points < 100 ? 1 : profile.points < 300 ? 2 : 3}
             </div>
           </div>
-          <h2 className="text-xl font-bold text-slate-900">{profile.full_name}</h2>
+          
+          <div className="flex items-center gap-2 mb-1">
+            <h2 className="text-xl font-bold text-slate-900">{profile.full_name}</h2>
+            <button onClick={() => setIsEditModalOpen(true)} className="text-brand-primary hover:bg-brand-primary/10 p-1.5 rounded-full transition-colors">
+              <Edit3 className="w-4 h-4" />
+            </button>
+          </div>
+          
+          {(profile.address || profile.phone) && (
+            <div className="flex flex-wrap justify-center gap-3 text-xs text-slate-500 font-medium mb-3 mt-1">
+              {profile.address && <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {profile.address}</span>}
+              {profile.phone && <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5" /> {profile.phone}</span>}
+            </div>
+          )}
           
           <div className="flex items-center gap-1 text-amber-500 font-bold mb-4 mt-1 bg-amber-50 px-3 py-1 rounded-full text-sm">
             <Trophy className="w-4 h-4" />
@@ -159,6 +214,50 @@ export default function PerfilPage() {
         </div>
 
       </section>
+
+      {/* Modal de Editar Perfil */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl shadow-xl w-full max-w-sm max-h-[90vh] flex flex-col animate-fade-in overflow-hidden border border-slate-200">
+            <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+              <h2 className="text-lg font-bold text-slate-900">Editar Perfil</h2>
+              <button onClick={() => setIsEditModalOpen(false)} className="text-slate-400 hover:text-slate-700 bg-white rounded-full p-1 shadow-sm">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto space-y-4">
+              <div className="flex justify-center mb-2">
+                 <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border-2 border-brand-primary/20">
+                   {/* eslint-disable-next-line @next/next/no-img-element */}
+                   <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.full_name || 'Explorador'}&backgroundColor=b6e3f4`} alt="Avatar Preview" className="w-full h-full" />
+                 </div>
+              </div>
+              <p className="text-[10px] text-center text-slate-400 -mt-3 mb-4 uppercase tracking-wider font-bold">O Avatar muda de acordo com o nome</p>
+
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-1">Seu Nome</label>
+                <input type="text" value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 text-sm" placeholder="Como quer ser chamado?" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-1">Endereço / Bairro</label>
+                <input type="text" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 text-sm" placeholder="Onde você mora?" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-1">WhatsApp</label>
+                <input type="text" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 text-sm" placeholder="(75) 9..." />
+              </div>
+            </div>
+            
+            <div className="p-5 border-t border-slate-100 flex gap-3 bg-slate-50">
+              <button onClick={() => setIsEditModalOpen(false)} className="flex-1 py-3 font-bold text-slate-500 hover:bg-slate-200 rounded-xl transition-colors">Cancelar</button>
+              <button onClick={handleSaveProfile} disabled={saving} className="flex-1 flex items-center justify-center gap-2 py-3 font-bold text-brand-text bg-brand-primary hover:bg-brand-primary/90 rounded-xl transition-colors shadow-sm disabled:opacity-50">
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Salvar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
