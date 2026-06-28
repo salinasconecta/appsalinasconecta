@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { ArrowLeft, MapPin, Phone, Store, Loader2, Share2 } from "lucide-react";
+import { ArrowLeft, MapPin, Phone, Store, Loader2, Share2, Instagram, Facebook } from "lucide-react";
 
 function PerfilContent() {
   const searchParams = useSearchParams();
@@ -130,6 +130,33 @@ function PerfilContent() {
               </div>
               <p>{business.address || 'Endereço não informado no cadastro.'}</p>
             </div>
+            
+            {(business.instagram_url || business.facebook_url) && (
+              <div className="grid grid-cols-2 gap-3 mt-2">
+                {business.instagram_url && (
+                  <a 
+                    href={business.instagram_url} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white p-3 rounded-2xl font-bold transition-opacity hover:opacity-90 shadow-sm"
+                  >
+                    <Instagram className="w-5 h-5" />
+                    Instagram
+                  </a>
+                )}
+                {business.facebook_url && (
+                  <a 
+                    href={business.facebook_url} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="flex items-center justify-center gap-2 bg-[#1877F2] text-white p-3 rounded-2xl font-bold transition-opacity hover:opacity-90 shadow-sm"
+                  >
+                    <Facebook className="w-5 h-5" />
+                    Facebook
+                  </a>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

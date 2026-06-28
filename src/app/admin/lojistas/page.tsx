@@ -18,6 +18,9 @@ export default function AdminLojistas() {
     whatsapp_number: '',
     image_url: '',
     description: '',
+    address: '',
+    instagram_url: '',
+    facebook_url: '',
     is_open: true
   });
 
@@ -47,11 +50,14 @@ export default function AdminLojistas() {
     if (business) {
       setEditingId(business.id);
       setFormData({
-        name: business.name,
+        name: business.name || '',
         category_id: business.category_id || '',
         whatsapp_number: business.whatsapp_number || '',
         image_url: business.image_url || '',
         description: business.description || '',
+        address: business.address || '',
+        instagram_url: business.instagram_url || '',
+        facebook_url: business.facebook_url || '',
         is_open: business.is_open
       });
     } else {
@@ -62,6 +68,9 @@ export default function AdminLojistas() {
         whatsapp_number: '',
         image_url: '',
         description: '',
+        address: '',
+        instagram_url: '',
+        facebook_url: '',
         is_open: true
       });
     }
@@ -209,6 +218,18 @@ export default function AdminLojistas() {
                   <div className="md:col-span-2">
                     <label className="block text-sm font-bold text-slate-700 mb-1">URL da Imagem</label>
                     <input type="text" value={formData.image_url} onChange={e => setFormData({...formData, image_url: e.target.value})} className="w-full px-3 py-2 rounded-md border border-slate-300" placeholder="https://..." />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-bold text-slate-700 mb-1">Endereço Completo</label>
+                    <input type="text" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-3 py-2 rounded-md border border-slate-300" placeholder="Rua, Número, Bairro..." />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-1">Link do Instagram (Opcional)</label>
+                    <input type="text" value={formData.instagram_url} onChange={e => setFormData({...formData, instagram_url: e.target.value})} className="w-full px-3 py-2 rounded-md border border-slate-300" placeholder="https://instagram.com/..." />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-1">Link do Facebook (Opcional)</label>
+                    <input type="text" value={formData.facebook_url} onChange={e => setFormData({...formData, facebook_url: e.target.value})} className="w-full px-3 py-2 rounded-md border border-slate-300" placeholder="https://facebook.com/..." />
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-bold text-slate-700 mb-1">Descrição</label>
