@@ -5,6 +5,7 @@ import { Search, MapPin, Heart, Store, ChevronRight, Loader2, CheckCircle2, Star
 import { supabase } from "@/lib/supabase";
 import { ReviewModal } from "@/components/ReviewModal";
 import { MapWrapper } from "@/components/Map";
+import Link from "next/link";
 
 export default function GuiaPage() {
   const [businesses, setBusinesses] = useState<any[]>([]);
@@ -193,11 +194,12 @@ export default function GuiaPage() {
                 </div>
                 
                 <div className="pt-3 border-t border-slate-100 flex gap-2">
-                  <button 
-                    className="flex-1 bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium py-2.5 rounded-xl text-sm transition-colors"
+                  <Link 
+                    href={`/guia/perfil?id=${store.id}`}
+                    className="flex-1 bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium py-2.5 rounded-xl text-sm transition-colors text-center block"
                   >
                     Ver Perfil
-                  </button>
+                  </Link>
                   
                   {/* Botão Check-in (Gamificação) */}
                   <button 
