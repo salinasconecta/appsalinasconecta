@@ -31,4 +31,8 @@ npm run dev
 O app estará rodando em `http://localhost:3000`.
 
 ## 📌 Histórico de Modificações (Changelog)
-- **v0.1.0** (28 Jun 2026): Inicialização do projeto Next.js 16 com Tailwind v4. Configuração da paleta de cores costeira, criação da arquitetura do App Shell (BottomNav) e layout Home (City Guide).
+- **Fase 1 - Fundações:** Inicialização do projeto Next.js 16 com Tailwind v4. Configuração da paleta de cores costeira, criação da arquitetura do App Shell (BottomNav) e layout Home (City Guide).
+- **Fase 2 - PWA e UI Pro Max:** Adição de ícones oficiais premium, ajustes visuais de Glassmorphism, configuração manifest.json e deployment na Cloudflare Pages.
+- **Fase 3 - Painel Administrativo:** Criação da área administrativa (/admin) conectada ao Supabase para gerenciamento completo de Lojistas, Categorias, História, Campanhas, Sorteios e Enquetes, superando as limitações do LocalStorage.
+- **Fase 4 - Interatividade e Gamificação:** Implementação do sistema de Check-ins com GPS gamificado, Favoritos, Avaliações por Estrelas e Sistema de Pontuação. 
+- **Fase 5 - Perfil do Usuário e Correções:** Criação da página "/conta" para edição de perfil do usuário (Avatar dinâmico, Endereço, WhatsApp), e correções avançadas de Filtros da Home e links de Redes Sociais no perfil do Lojista.
