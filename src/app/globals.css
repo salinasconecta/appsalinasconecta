@@ -1,26 +1,61 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Nova Paleta Plana e Profissional (Forçada Globalmente) */
+  --color-brand-bg: #ffefd3;
+  --color-brand-surface: #fffee4;
+  --color-brand-soft: #d0ecea;
+  --color-brand-primary: #9fd6d2;
+  --color-brand-text: #8b7a5e;
+
+  /* Aliases para componentes padronizados */
+  --color-primary: #9fd6d2;
+  --color-secondary: #d0ecea;
+  --color-accent: #8b7a5e;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    color-scheme: light; /* Força os controles nativos do navegador para o tema claro */
+  }
+  body {
+    background-color: var(--color-brand-bg) !important;
+    color: var(--color-brand-text) !important;
+    font-family: var(--font-inter), sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Utilitários sem degradês ou modos escuros */
+@layer utilities {
+  .glass {
+    @apply bg-brand-surface border-t border-brand-primary/20 shadow-sm;
+  }
+  .glass-card {
+    @apply bg-brand-surface border border-brand-primary/20 shadow-sm rounded-2xl;
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
