@@ -1,13 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, MapPin, Heart, Store, ChevronRight, Loader2, CheckCircle2, Star, Map as MapIcon, List } from "lucide-react";
+import { Search, MapPin, Heart, Store, ChevronRight, Loader2, CheckCircle2, Star, Map as MapIcon, List, FilterX } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { ReviewModal } from "@/components/ReviewModal";
 import { MapWrapper } from "@/components/Map";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function GuiaPage() {
+function GuiaContent() {
+  const searchParams = useSearchParams();
+  const categoryFilter = searchParams.get("categoria");
+
   const [businesses, setBusinesses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -33,8 +38,8 @@ export default function GuiaPage() {
     setDeviceId(id);
 
     async function loadData() {
-      // Busca lojistas
-      const { data: bData } = await supabase.from('businesses').select('*').order('name');
+      // Busca lojistas com suas categorias
+      const { data: bData } = await supabase.from('businesses').select('*, categories(name, slug)').order('name');
       if (bData) setBusinesses(bData);
 
       // Busca interações do usuário (para saber se já curtiu/fez checkin)
@@ -99,15 +104,32 @@ export default function GuiaPage() {
     }
   };
 
-  const filteredBusinesses = businesses.filter(b => b.name.toLowerCase().includes(search.toLowerCase()) || b.category.toLowerCase().includes(search.toLowerCase()));
+  const filteredBusinesses = businesses.filter(b => {
+    const matchesSearch = search === "" || 
+      b.name.toLowerCase().includes(search.toLowerCase()) || 
+      (b.categories?.name || "").toLowerCase().includes(search.toLowerCase());
+      
+    const matchesCategory = !categoryFilter || 
+      (b.categories?.slug === categoryFilter || (b.categories?.name || "").toLowerCase() === categoryFilter.toLowerCase());
+
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="min-h-screen pb-24 bg-slate-50">
       {/* Header Fixo */}
       <div className="sticky top-0 z-40 bg-brand-primary pt-12 pb-6 px-4 rounded-b-[2rem] shadow-sm">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold text-brand-text">Guia Comercial</h1>
-          <div className="flex bg-white/20 p-1 rounded-xl">
+          <h1 className="text-2xl font-bold text-brand-text">
+            {categoryFilter ? `Lojas: ${categoryFilter.charAt(0).toUpperCase() + categoryFilter.slice(1)}` : 'Guia Comercial'}
+          </h1>
+          <div className="flex items-center gap-2">
+            {categoryFilter && (
+              <Link href="/guia" className="p-2 rounded-lg bg-white/20 text-white hover:bg-white/30 transition-colors">
+                <FilterX className="w-5 h-5" />
+              </Link>
+            )}
+            <div className="flex bg-white/20 p-1 rounded-xl">
             <button 
               onClick={() => setViewMode('list')}
               className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-white text-brand-primary' : 'text-white'}`}
@@ -166,10 +188,10 @@ export default function GuiaPage() {
                     </div>
                     <div>
                       <h3 className="font-bold text-slate-900">{store.name}</h3>
-                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">{store.category}</span>
+                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">{store.categories?.name || 'Comércio Local'}</span>
                       <div className="flex items-center gap-1 mt-1">
-                        <span className={`w-2 h-2 rounded-full ${store.status === 'open' ? 'bg-emerald-500' : 'bg-red-500'}`}></span>
-                        <span className="text-xs text-slate-500">{store.status === 'open' ? 'Aberto agora' : 'Fechado'}</span>
+                        <span className={`w-2 h-2 rounded-full ${store.is_open ? 'bg-emerald-500' : 'bg-slate-300'}`}></span>
+                        <span className="text-xs text-slate-500">{store.is_open ? 'Aberto agora' : 'Fechado'}</span>
                       </div>
                     </div>
                   </div>
@@ -242,5 +264,13 @@ export default function GuiaPage() {
         />
       )}
     </div>
+  );
+}
+
+export default function GuiaPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-brand-primary" /></div>}>
+      <GuiaContent />
+    </Suspense>
   );
 }
