@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { BottomNav } from "@/components/navigation/BottomNav";
 import OneSignalInitializer from "@/components/OneSignalInitializer";
+import { InstallPWA } from "@/components/InstallPWA";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -45,6 +46,7 @@ export default function RootLayout({
         <main className="flex-1 pb-16">
           {children}
         </main>
+        <InstallPWA />
 
         <BottomNav />
       </body>
