@@ -118,8 +118,6 @@ export default function PerfilPage() {
       <section className="px-4 -mt-16 relative z-10 animate-fade-in">
         <div className="bg-brand-surface rounded-2xl shadow-md p-6 flex flex-col items-center text-center border border-brand-primary/20">
           <div className="w-24 h-24 rounded-full bg-amber-100 border-4 border-brand-surface -mt-16 mb-3 flex items-center justify-center relative overflow-hidden">
-             {/* eslint-disable-next-line @next/next/no-img-element */}
-             <img 
              <img 
               src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.full_name}&backgroundColor=b6e3f4`} 
               alt="Avatar do Usuário" 

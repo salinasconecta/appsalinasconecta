@@ -142,6 +142,7 @@ function GuiaContent() {
             >
               <MapIcon className="w-5 h-5" />
             </button>
+            </div>
           </div>
         </div>
         <div className="relative">
