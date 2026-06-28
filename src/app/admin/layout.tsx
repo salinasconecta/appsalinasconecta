@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LayoutDashboard, Users, Tag, BookOpen, Settings, LogOut, Trophy, PieChart } from "lucide-react";
+import { LayoutDashboard, Users, Tag, BookOpen, Settings, LogOut, Trophy, PieChart, ShieldAlert } from "lucide-react";
 
 export default function AdminLayout({
   children,
@@ -33,6 +33,9 @@ export default function AdminLayout({
           </Link>
           <Link href="/admin/enquetes" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md hover:bg-blue-100 text-blue-700">
             <PieChart className="w-4 h-4" /> Enquetes
+          </Link>
+          <Link href="/admin/utilidades" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md hover:bg-emerald-100 text-emerald-700">
+            <ShieldAlert className="w-4 h-4" /> Utilidade Pública
           </Link>
           <Link href="/admin/configuracoes" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md hover:bg-slate-100 text-slate-700">
             <Settings className="w-4 h-4" /> Textos do App
